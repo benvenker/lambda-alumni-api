@@ -21,3 +21,20 @@ server.get("/posts", (req, res) => {
       });
     });
 });
+
+server.get("/post/:id", (req, res) => {
+  return posts
+    .findById(req.params.id)
+    .then((post) => {
+      post === undefined
+        ? res
+            .status(404)
+            .json({ message: "The post with the specified ID does not exist." })
+        : res.status(200).json(post);
+    })
+    .catch((err) =>
+      res
+        .status(500)
+        .json({ error: "The post information could not be retrieved." })
+    );
+});
