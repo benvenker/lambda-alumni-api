@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { server, port } = require("./server.js");
-const posts = require("./db.js");
+const posts = require("./data/db.js");
+const comments = require("./data/db.js");
 
 server.listen(port, () => {
   console.log("Rnning on port 5000!");
@@ -36,6 +37,38 @@ server.get("/post/:id", (req, res) => {
       res
         .status(500)
         .json({ error: "The post information could not be retrieved." })
+    );
+});
+
+server.get("/comments/:postId", (req, res) => {
+  // console.log(req.params.postId);
+  const postId = req.params.postId;
+  return comments
+    .findCommentByPostId(postId)
+    .then((comments) => {
+      postId === undefined
+        ? res
+            .status(404)
+            .json({ message: "The specified post has no commments." })
+        : res.status(200).json(comments);
+    })
+    .catch((err) =>
+      res
+        .status(500)
+        .json({ error: "The post information could not be retrieved." })
+    );
+});
+
+server.post("/post/:id", (req, res) => {
+  return comments
+    .insertComment(req.body)
+    .then((comment) => {
+      comment === undefined
+        ? res.status(404).json({ message: "There was nothing to insert." })
+        : res.status(200).json(comment);
+    })
+    .catch((err) =>
+      res.status(500).json({ error: "The comment failed to post." })
     );
 });
 
