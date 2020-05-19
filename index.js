@@ -72,7 +72,7 @@ server.post("/post/:id", (req, res) => {
     );
 });
 
-server.post("/submit", (req, res) => {
+server.post("/submit", checkJwt, (req, res) => {
   console.log(req.body);
   return posts
     .insert(req.body)
