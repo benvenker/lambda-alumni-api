@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { server, port } = require("./server.js");
+const { server, port, checkJwt } = require("./server.js");
 const posts = require("./data/db.js");
 const comments = require("./data/db.js");
 
@@ -40,7 +40,7 @@ server.get("/post/:id", (req, res) => {
     );
 });
 
-server.get("/comments/:postId", (req, res) => {
+server.get("/comments/:postId", checkJwt, (req, res) => {
   // console.log(req.params.postId);
   const postId = req.params.postId;
   return comments
