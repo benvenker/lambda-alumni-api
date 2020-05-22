@@ -72,6 +72,14 @@ const addUser = (username) => {
     .catch((err) => console.log(err));
 };
 
+const getVotes = (postId) => {
+  return db("votes")
+    .count("post_id")
+    .where({ post_id: postId })
+    .then((row) => row)
+    .catch((err) => err);
+};
+
 module.exports = {
   find,
   findById,
@@ -82,4 +90,5 @@ module.exports = {
   findByUsername,
   addUser,
   upVote,
+  getVotes,
 };

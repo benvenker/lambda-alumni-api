@@ -107,3 +107,7 @@ server.post("/add-user", (req, res) => {
 server.post("/upvote", (req, res) => {
   return votes.upVote(req.body).then((vote) => res.json(vote));
 });
+
+server.post("/votes", (req, res) => {
+  return votes.getVotes(req.body.post_id).then((v) => res.json(v));
+});
