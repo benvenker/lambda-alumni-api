@@ -1,6 +1,7 @@
 const knex = require("knex");
 const knexConfig = require("../dbconfig");
 const db = knex(knexConfig.development);
+const moment = require("moment");
 
 const find = () => {
   return db("posts").orderBy("created_date", "desc");
@@ -34,6 +35,27 @@ const findCommentByPostId = (postId) => {
   return db("comments")
     .where({ post_id: Number(postId) })
     .orderBy("id", "desc")
+    .then((rows) => {
+      return rows.map((row) => {
+        return {
+          body: row.body,
+          created_date: moment(row.created_date).format("MMMM Do 'YY, h:mm a"),
+          user_id: row.user_id,
+        };
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
+const testKnexOutput = () => {};
+
+testKnexOutput();
+
+const findCommentsCountByPostId = (postId) => {
+  const id = postId; // don't think is necessary but pg is barking
+  return db("comments")
+    .count("comments")
+    .where({ post_id: id })
     .catch((err) => console.log(err));
 };
 
@@ -91,4 +113,6 @@ module.exports = {
   addUser,
   upVote,
   getVotes,
+  findCommentsCountByPostId,
+  testKnexOutput,
 };

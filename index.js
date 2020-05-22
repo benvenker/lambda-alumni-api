@@ -61,7 +61,25 @@ server.get("/comments/:postId", checkJwt, (req, res) => {
     );
 });
 
-server.post("/post/:id", (req, res) => {
+server.get("/comments/:postId/count", (req, res) => {
+  const postId = req.params.postId;
+  return comments
+    .findCommentsCountByPostId(postId)
+    .then((commentsCount) => {
+      postId === undefined
+        ? res.status(404).json({
+            message: "The specified comments count could not be retrieved",
+          })
+        : res.status(200).json(commentsCount);
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ error: "the comments information could not be retrieved" });
+    });
+});
+
+server.post("/post", (req, res) => {
   return comments
     .insertComment(req.body)
     .then((comment) => {
@@ -110,4 +128,8 @@ server.post("/upvote", (req, res) => {
 
 server.post("/votes", (req, res) => {
   return votes.getVotes(req.body.post_id).then((v) => res.json(v));
+});
+
+server.get("/knex", (req, res) => {
+  return comments.testKnexOutput().then((output) => res.json(output));
 });
