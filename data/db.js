@@ -37,6 +37,39 @@ const findCommentByPostId = (postId) => {
     .catch((err) => console.log(err));
 };
 
+const upVote = (postId, userId) => {
+  // take the id of the post and the userID
+  // Where to get the userID?
+  const vote = { postId, created_date: new Date(), user_id };
+};
+
+const findByUsername = async (userName) => {
+  try {
+    return await db("users")
+      .where({ username: userName })
+      .then((res) => res.json);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const addUser = (username) => {
+  console.log({ username });
+
+  const user = { username: username, created_date: new Date() };
+  return db("users")
+    .where({ username: username })
+    .then((rows) => {
+      if (rows.length === 0) {
+        // no matching records fouund
+        return db("users").insert({ ...user }, "id");
+      } else {
+        throw new Error("the user already exists :)");
+      }
+    })
+    .catch((err) => console.log(err));
+};
+
 module.exports = {
   find,
   findById,
@@ -44,4 +77,6 @@ module.exports = {
   findComments,
   insertComment,
   findCommentByPostId,
+  findByUsername,
+  addUser,
 };

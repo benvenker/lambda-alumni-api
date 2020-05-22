@@ -2,6 +2,7 @@ require("dotenv").config();
 const { server, port, checkJwt } = require("./server.js");
 const posts = require("./data/db.js");
 const comments = require("./data/db.js");
+const users = require("./data/db.js");
 
 server.listen(port, () => {
   console.log("Rnning on port 5000!");
@@ -82,4 +83,22 @@ server.post("/submit", checkJwt, (req, res) => {
         : res.status(200).json(post);
     })
     .catch((err) => res.status(500).json({ error: "The post failed." }));
+});
+
+server.post("/users", (req, res) => {
+  // return users.findByUsername(req.body.username);\
+  return res.json(req);
+});
+
+server.post("/add-user", (req, res) => {
+  console.log(req.body.username);
+  if (req.body.username !== "") {
+    return users.addUser(req.body.username).then((user) => {
+      res.json(user);
+    });
+  } else if (req.body.username === "") {
+    return null;
+  }
+
+  return req.body;
 });
