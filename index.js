@@ -3,6 +3,7 @@ const { server, port, checkJwt } = require("./server.js");
 const posts = require("./data/db.js");
 const comments = require("./data/db.js");
 const users = require("./data/db.js");
+const votes = require("./data/db.js");
 
 server.listen(port, () => {
   console.log("Rnning on port 5000!");
@@ -101,4 +102,8 @@ server.post("/add-user", (req, res) => {
   }
 
   return req.body;
+});
+
+server.post("/upvote", (req, res) => {
+  return votes.upVote(req.body).then((vote) => res.json(vote));
 });
