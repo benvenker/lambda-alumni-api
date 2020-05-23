@@ -4,7 +4,21 @@ const db = knex(knexConfig.development);
 const moment = require("moment");
 
 const find = () => {
-  return db("posts").orderBy("created_date", "desc");
+  return db("posts")
+    .join("users", "users.id", "=", "posts.user_id")
+    .select("users.username", "posts.title", "posts.created_date", "posts.id")
+    .orderBy("posts.created_date", "desc")
+    .then((rows) => {
+      return rows.map((row) => {
+        return {
+          id: row.id,
+          title: row.title,
+          username: row.username,
+          created_date: moment(row.created_date).format("MMMM Do 'YY, h:mm a"),
+        };
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 const findById = (id) => {
@@ -33,21 +47,36 @@ const insertComment = (comment) => {
 
 const findCommentByPostId = (postId) => {
   return db("comments")
+    .join("users", "users.id", "=", "comments.user_id")
+    .select(
+      "users.username",
+      "comments.body",
+      "comments.created_date",
+      "comments.user_id"
+    )
     .where({ post_id: Number(postId) })
-    .orderBy("id", "desc")
+    .orderBy("comments.created_date", "desc")
     .then((rows) => {
       return rows.map((row) => {
         return {
           body: row.body,
           created_date: moment(row.created_date).format("MMMM Do 'YY, h:mm a"),
           user_id: row.user_id,
+          username: row.username,
         };
       });
     })
     .catch((err) => console.log(err));
 };
 
-const testKnexOutput = () => {};
+const testKnexOutput = () => {
+  return (
+    db("users")
+      .select("*")
+      // .then((rows) => {rows[0])
+      .catch((err) => console.log(err))
+  );
+};
 
 testKnexOutput();
 
@@ -67,14 +96,11 @@ const upVote = (vote) => {
     .catch((err) => console.log(err));
 };
 
-const findByUsername = async (userName) => {
-  try {
-    return await db("users")
-      .where({ username: userName })
-      .then((row) => row);
-  } catch (err) {
-    console.log(err);
-  }
+const findByUsername = (userName) => {
+  return db("users")
+    .where({ username: userName })
+    .then((rows) => rows[0])
+    .catch((err) => console.log(err));
 };
 
 const addUser = (username) => {
