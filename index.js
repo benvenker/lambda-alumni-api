@@ -105,12 +105,11 @@ server.post("/submit", checkJwt, (req, res) => {
 });
 
 server.post("/users", (req, res) => {
-  // return users.findByUsername(req.body.username);\
-  return res.json(req);
+  return users.findByUsername(req.body.username).then((user) => res.json(user));
+  // return res.json(req);
 });
 
 server.post("/add-user", (req, res) => {
-  console.log(req.body.username);
   if (req.body.username !== "") {
     return users.addUser(req.body.username).then((user) => {
       res.json(user);
