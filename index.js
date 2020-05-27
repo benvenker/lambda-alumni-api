@@ -15,14 +15,15 @@ server.get("/", (req, res) => {
 });
 
 server.get("/posts", (req, res) => {
-  return posts
-    .find()
-    .then((posts) => res.status(200).json(posts))
-    .catch((err) => {
-      res.status(500).json({
-        message: `Error retrieving poasts: ${err}`,
-      });
-    });
+  // return posts
+  //   .find()
+  //   .then((posts) => res.status(200).json(posts))
+  //   .catch((err) => {
+  //     res.status(500).json({
+  //       message: `Error retrieving poasts: ${err}`,
+  //     });
+  //   });
+  res.send({ message: "this is confirming you hit the endpoint" });
 });
 
 server.get("/post/:id", (req, res) => {
