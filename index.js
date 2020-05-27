@@ -95,15 +95,15 @@ server.post("/post", (req, res) => {
 
 server.post("/submit", checkJwt, (req, res) => {
   console.log(req.body);
-  // return posts
-  //   .insert(req.body)
-  //   .then((post) => {
-  //     post === undefined
-  //       ? res.status(404).json({ message: "There was nothing to postt." })
-  //       : res.status(200).json(post);
-  //   })
-  //   .catch((err) => res.status(500).json({ error: "The post failed." }));
-  res.send({ message: "endpoit hit" });
+  return posts
+    .insert(req.body)
+    .then((post) => {
+      post === undefined
+        ? res.status(404).json({ message: "There was nothing to postt." })
+        : res.status(200).json(post);
+    })
+    .catch((err) => res.status(500).json({ error: "The post failed." }));
+  // res.send({ message: "endpoit hit" });
 });
 
 server.post("/users", (req, res) => {
