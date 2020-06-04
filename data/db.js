@@ -147,7 +147,13 @@ const checkUserVote = (voteInfo) => {
       "=",
       voteInfo.usernanme
     )
-    .then((row) => row)
+    .then((rows) => {
+      if (rows.length === 0) {
+        return { message: "no votes found" };
+      } else if (rows.length > 0) {
+        return rows;
+      }
+    })
     .catch((err) => err);
 };
 

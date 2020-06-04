@@ -146,12 +146,12 @@ server.post("/votes", (req, res) => {
   return votes.getVotes(req.body.post_id).then((v) => res.json(v));
 });
 
-server.get("/check-vote", (req, res) => {
+server.post("/check-vote", (req, res) => {
   return votes
     .checkUserVote(req.body)
     .then((vote) => {
       console.log(vote);
-      vote === []
+      vote === undefined
         ? res.status(404).json({ message: "No vote found" })
         : res.status(200).json(vote);
     })
