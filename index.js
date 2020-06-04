@@ -43,6 +43,21 @@ server.get("/post/:id", (req, res) => {
     );
 });
 
+server.put("/post/:id", (req, res) => {
+  return posts
+    .edit({ id: req.params.id, ...req.body })
+    .then((post) => {
+      post === undefined
+        ? res
+            .status(404)
+            .json({ message: "The post to update could not be found" })
+        : res.status(200).json(post);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "The post could not be updated" });
+    });
+});
+
 server.get("/comments/:postId", checkJwt, (req, res) => {
   // console.log(req.params.postId);
   const postId = req.params.postId;
@@ -129,6 +144,20 @@ server.post("/upvote", (req, res) => {
 
 server.post("/votes", (req, res) => {
   return votes.getVotes(req.body.post_id).then((v) => res.json(v));
+});
+
+server.get("/check-vote", (req, res) => {
+  return votes
+    .checkUserVote(req.body)
+    .then((vote) => {
+      console.log(vote);
+      vote === []
+        ? res.status(404).json({ message: "No vote found" })
+        : res.status(200).json(vote);
+    })
+    .catch((err) =>
+      res.status(500).json({ message: "Failed to get vote, server error." })
+    );
 });
 
 server.get("/knex", (req, res) => {

@@ -34,6 +34,14 @@ const insert = (post) => {
   );
 };
 
+const edit = (post) => {
+  return db("posts").where("id", "=", post.id).update({
+    url: post.url,
+    title: post.title,
+    body: post.body,
+  });
+};
+
 const findComments = () => {
   return db("comments");
 };
@@ -128,7 +136,24 @@ const getVotes = (postId) => {
     .catch((err) => err);
 };
 
+const checkUserVote = (voteInfo) => {
+  return db("votes")
+    .where(
+      "post_id",
+      "=",
+      voteInfo.post_id,
+      "AND",
+      "username",
+      "=",
+      voteInfo.usernanme
+    )
+    .then((row) => row)
+    .catch((err) => err);
+};
+
 module.exports = {
+  edit,
+  checkUserVote,
   find,
   findById,
   insert,
