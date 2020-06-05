@@ -34,6 +34,14 @@ const insert = (post) => {
   );
 };
 
+const deletePost = (post) => {
+  const id = post.id;
+  return db("posts")
+    .where({ id: id })
+    .del()
+    .catch((err) => console.log(err));
+};
+
 const edit = (post) => {
   return db("posts").where("id", "=", post.id).update({
     url: post.url,
@@ -178,6 +186,7 @@ module.exports = {
   find,
   findById,
   insert,
+  deletePost,
   findComments,
   insertComment,
   findCommentByPostId,
