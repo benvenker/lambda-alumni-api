@@ -58,6 +58,12 @@ server.put("/post/:id", (req, res) => {
     });
 });
 
+server.delete("/post/:id", (req, res) => {
+  return posts
+    .deletePost({ id: req.params.id })
+    .catch((err) => console.log(err));
+});
+
 server.get("/comments/:postId", checkJwt, (req, res) => {
   // console.log(req.params.postId);
   const postId = req.params.postId;
