@@ -157,6 +157,21 @@ const checkUserVote = (voteInfo) => {
     .catch((err) => err);
 };
 
+const searchText = (searchObj) => {
+  var string = searchObj.terms;
+  console.log(`${string.replace(/[""]/g, "")}`);
+  return db
+    .raw(
+      `
+    select posts.id, posts.username, posts.title
+    from posts
+    where post_tokens @@ to_tsquery('${string}')
+  `
+    )
+    .then((res) => res.rows)
+    .catch((err) => err);
+};
+
 module.exports = {
   edit,
   checkUserVote,
@@ -171,5 +186,6 @@ module.exports = {
   upVote,
   getVotes,
   findCommentsCountByPostId,
+  searchText,
   testKnexOutput,
 };

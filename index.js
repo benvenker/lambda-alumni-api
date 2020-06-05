@@ -160,6 +160,22 @@ server.post("/check-vote", (req, res) => {
     );
 });
 
+server.post("/search", (req, res) => {
+  return posts
+    .searchText(req.body)
+    .then((results) => {
+      console.log(results);
+      results === undefined
+        ? res.status(404).json({ message: "No results matched your search" })
+        : res.status(200).json(results);
+    })
+    .catch((err) => {
+      res
+        .status(500)
+        .json({ message: `Failed to execute search, server error: ${err}` });
+    });
+});
+
 server.get("/knex", (req, res) => {
   return comments.testKnexOutput().then((output) => res.json(output));
 });
