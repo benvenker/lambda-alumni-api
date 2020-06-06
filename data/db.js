@@ -4,17 +4,32 @@ const db = knex(knexConfig.development);
 const moment = require("moment");
 
 const find = () => {
-  return db("posts")
-    .join("users", "users.id", "=", "posts.user_id")
-    .select("users.username", "posts.title", "posts.created_date", "posts.id")
-    .orderBy("posts.created_date", "desc")
-    .then((rows) => {
-      return rows.map((row) => {
+  return db
+    .raw(
+      `select
+        p.title,
+        p.url,
+        p.username,
+        p.id,
+        p.created_date,
+        p.user_id,
+        (select count(v.id) as votes from votes v where v.post_id = p.id) as votes,
+        (select count(c.id) as comments from comments c where c.post_id = p.id) as comments
+        from posts p
+        order by p.created_date desc;
+        `
+    )
+    .then((response) => {
+      return response.rows.map((row) => {
         return {
           id: row.id,
+          user_id: row.user_id,
           title: row.title,
           username: row.username,
           created_date: moment(row.created_date).format("MMMM Do 'YY, h:mm a"),
+          url: row.url,
+          votes: row.votes,
+          comments: row.comments,
         };
       });
     })
@@ -86,12 +101,27 @@ const findCommentByPostId = (postId) => {
 };
 
 const testKnexOutput = () => {
-  return (
-    db("users")
-      .select("*")
-      // .then((rows) => {rows[0])
-      .catch((err) => console.log(err))
+  const voteCount = db.raw(
+    `(select count(v.id) as votes from votes v where v.post_id = p.id`
   );
+
+  const commentCount = db.raw(
+    `select count(c.id) as comments from comments c where c.post_id = p.id`
+  );
+
+  return db
+    .select(
+      "title",
+      "url",
+      "username",
+      "id",
+      "created_date",
+      "user_id",
+      voteCount,
+      commentCount
+    )
+    .from("posts")
+    .then((rows) => rows);
 };
 
 testKnexOutput();
