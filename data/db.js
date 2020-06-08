@@ -201,9 +201,18 @@ const searchText = (searchObj) => {
   return db
     .raw(
       `
-    select posts.id, posts.username, posts.title
-    from posts
+    select
+        p.title,
+        p.url,
+        p.username,
+        p.id,
+        p.created_date,
+        p.user_id,
+        (select count(v.id) as votes from votes v where v.post_id = p.id) as votes,
+        (select count(c.id) as comments from comments c where c.post_id = p.id) as comments
+        from posts p
     where post_tokens @@ to_tsquery('${string}')
+    order by p.created_date desc;
   `
     )
     .then((res) => res.rows)
