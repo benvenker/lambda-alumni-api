@@ -37,7 +37,24 @@ const find = () => {
 };
 
 const findById = (id) => {
-  return db("posts").where({ id: Number(id) });
+  return db
+    .raw(
+      `select
+        p.title,
+        p.url,
+        p.username,
+        p.id,
+        p.created_date,
+        p.user_id,
+        p.body,
+        (select count(v.id) as votes from votes v where v.post_id = p.id) as votes,
+        (select count(c.id) as comments from comments c where c.post_id = p.id) as comments
+        from posts p
+        where p.id = ${id};
+        `
+    )
+    .then((response) => response.rows)
+    .catch((err) => console.log(err));
 };
 
 const insert = (post) => {
@@ -116,9 +133,9 @@ const testKnexOutput = () => {
       "username",
       "id",
       "created_date",
-      "user_id",
-      voteCount,
-      commentCount
+      "user_id"
+      // voteCount,
+      // commentCount
     )
     .from("posts")
     .then((rows) => rows);
@@ -175,16 +192,9 @@ const getVotes = (postId) => {
 };
 
 const checkUserVote = (voteInfo) => {
+  console.log({ voteInfo });
   return db("votes")
-    .where(
-      "post_id",
-      "=",
-      voteInfo.post_id,
-      "AND",
-      "username",
-      "=",
-      voteInfo.usernanme
-    )
+    .where({ post_id: voteInfo.post_id, username: voteInfo.username })
     .then((rows) => {
       if (rows.length === 0) {
         return { message: "no votes found" };
