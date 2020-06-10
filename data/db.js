@@ -205,6 +205,27 @@ const checkUserVote = (voteInfo) => {
     .catch((err) => err);
 };
 
+const getMostPopular = () => {
+  return db
+    .raw(
+      `
+     select
+        p.title,
+        p.url,
+        p.username,
+        p.id,
+        p.created_date,
+        p.user_id,
+        (select count(v.id) as votes from votes v where v.post_id = p.id) as votes,
+        (select count(c.id) as comments from comments c where c.post_id = p.id) as comments
+        from posts p
+        order by votes desc
+  `
+    )
+    .then((res) => res.rows)
+    .catch((err) => err);
+};
+
 const searchText = (searchObj) => {
   var string = searchObj.terms;
   console.log(`${string.replace(/[""]/g, "")}`);
@@ -240,6 +261,7 @@ module.exports = {
   insertComment,
   findCommentByPostId,
   findByUsername,
+  getMostPopular,
   addUser,
   upVote,
   getVotes,

@@ -23,7 +23,17 @@ server.get("/posts", (req, res) => {
         message: `Error retrieving poasts: ${err}`,
       });
     });
-  res.send({ message: "this is confirming you hit the endpoint" });
+});
+
+server.get("/popular", (req, res) => {
+  return posts
+    .getMostPopular()
+    .then((posts) => res.status(200).json(posts))
+    .catch((err) => {
+      res.status(500).json({
+        message: `Error retrieving poasts: ${err}`,
+      });
+    });
 });
 
 server.get("/post/:id", (req, res) => {
