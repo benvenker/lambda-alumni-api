@@ -14,11 +14,11 @@ server.get('/', (req, res) => {
   res.send('<h1>Welcome to the Lambda Alumni API');
 });
 
-server.post('/posts', (req, res) => {
-  const itemsPerPage = req.body.items;
-  const page = req.body.page;
+server.get('/posts', (req, res) => {
+  const { page, items } = req.query;
+
   return posts
-    .find(itemsPerPage, page)
+    .find(items, page)
     .then(posts => res.status(200).json(posts))
     .catch(err => {
       res.status(500).json({
