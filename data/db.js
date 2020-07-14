@@ -3,7 +3,7 @@ const knexConfig = require("../dbconfig");
 const db = knex(knexConfig.development);
 const moment = require("moment");
 
-const find = () => {
+const find = (itemsPerPage, page) => {
   return db
     .raw(
       `select
@@ -16,7 +16,8 @@ const find = () => {
         (select count(v.id) as votes from votes v where v.post_id = p.id) as votes,
         (select count(c.id) as comments from comments c where c.post_id = p.id) as comments
         from posts p
-        order by p.created_date desc;
+        order by p.created_date desc
+        limit ${itemsPerPage} offset ${(page - 1) * itemsPerPage};
         `
     )
     .then((response) => {
@@ -205,7 +206,7 @@ const checkUserVote = (voteInfo) => {
     .catch((err) => err);
 };
 
-const getMostPopular = () => {
+const getMostPopular = (itemsPerPage, page) => {
   return db
     .raw(
       `
@@ -220,6 +221,8 @@ const getMostPopular = () => {
         (select count(c.id) as comments from comments c where c.post_id = p.id) as comments
         from posts p
         order by votes desc
+        limit ${itemsPerPage} offset ${page * itemsPerPage};
+
   `
     )
     .then((res) => res.rows)
