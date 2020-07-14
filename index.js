@@ -27,9 +27,9 @@ server.get('/posts', (req, res) => {
     });
 });
 
-server.post('/popular', (req, res) => {
-  const itemsPerPage = req.body.items;
-  const page = req.body.page;
+server.get('/popular', (req, res) => {
+  const itemsPerPage = req.query.items;
+  const page = req.query.page;
   return posts
     .getMostPopular(itemsPerPage, page)
     .then(posts => res.status(200).json(posts))
