@@ -8,18 +8,18 @@ module.exports = {
   findCommentsCountByPostId,
 };
 
-const findComments = () => {
+function findComments() {
   return db('comments');
-};
+}
 
-const insertComment = comment => {
+function insertComment(comment) {
   const commentWithDate = { ...comment, created_date: new Date() };
   return db('comments')
     .insert(commentWithDate, 'id')
     .catch(err => console.log(err));
-};
+}
 
-const findCommentByPostId = postId => {
+function findCommentByPostId(postId) {
   return db('comments')
     .join('users', 'users.id', '=', 'comments.user_id')
     .select(
@@ -41,12 +41,12 @@ const findCommentByPostId = postId => {
       });
     })
     .catch(err => console.log(err));
-};
+}
 
-const findCommentsCountByPostId = postId => {
+function findCommentsCountByPostId(postId) {
   const id = postId; // don't think is necessary but pg is barking
   return db('comments')
     .count('comments')
     .where({ post_id: id })
     .catch(err => console.log(err));
-};
+}

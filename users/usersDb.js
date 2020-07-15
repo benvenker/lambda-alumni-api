@@ -5,14 +5,14 @@ module.exports = {
   addUser,
 };
 
-const findByUsername = userName => {
+function findByUsername(userName) {
   return db('users')
     .where({ username: userName })
     .then(rows => rows[0])
     .catch(err => console.log(err));
-};
+}
 
-const addUser = username => {
+function addUser(username) {
   console.log({ username });
 
   const user = { username: username, created_date: new Date() };
@@ -27,4 +27,4 @@ const addUser = username => {
       }
     })
     .catch(err => console.log(err));
-};
+}

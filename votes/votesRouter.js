@@ -3,12 +3,12 @@ const votes = require('./votesDb');
 const checkJwt = require('../middleware/checkJwt');
 const router = express.Router();
 
-server.get('/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   return votes.getVotes(req.params.id).then(v => res.json(v));
 });
 
 // Check to see if a vote exists
-server.get('/check-vote', (req, res) => {
+router.get('/check-vote', (req, res) => {
   const { username, post_id } = req.query;
   const user = { useranme: username, post_id: post_id };
   return votes

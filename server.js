@@ -19,5 +19,4 @@ server.use('/votes', votesRouter);
 module.exports = {
   server,
   port,
-  checkJwt,
 };

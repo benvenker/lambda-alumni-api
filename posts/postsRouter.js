@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
     });
 });
 
-server.get('/popular', (req, res) => {
+router.get('/popular', (req, res) => {
   const itemsPerPage = req.query.items;
   const page = req.query.page;
   return posts
@@ -30,7 +30,7 @@ server.get('/popular', (req, res) => {
 });
 
 // Retrieve a post by id
-server.get('/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   return posts
     .findById(req.params.id)
     .then(post => {
@@ -48,7 +48,7 @@ server.get('/:id', (req, res) => {
 });
 
 // Edit a post
-server.put('/:id', (req, res) => {
+router.put('/:id', (req, res) => {
   return posts
     .edit({ id: req.params.id, ...req.body })
     .then(post => {
@@ -64,12 +64,12 @@ server.put('/:id', (req, res) => {
 });
 
 // Delete a post by ID
-server.delete('/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
   return posts.deletePost({ id: req.params.id }).catch(err => console.log(err));
 });
 
 // Create a new post
-server.post('/', checkJwt, (req, res) => {
+router.post('/', checkJwt, (req, res) => {
   console.log(req.body);
   return posts
     .insert(req.body)
@@ -83,12 +83,12 @@ server.post('/', checkJwt, (req, res) => {
 });
 
 // Upvote a post
-server.post('/upvote', (req, res) => {
+router.post('/upvote', (req, res) => {
   return votes.upVote(req.body).then(vote => res.json(vote));
 });
 
 // Text search the posts
-server.post('/search', (req, res) => {
+router.post('/search', (req, res) => {
   return posts
     .searchText(req.body)
     .then(results => {

@@ -6,23 +6,23 @@ module.exports = {
   checkUserVote,
 };
 
-const upVote = vote => {
+function upVote(vote) {
   // take the id of the post and the userID
   const newVote = { ...vote, created_date: new Date() };
   return db('votes')
     .insert(newVote, 'id')
     .catch(err => console.log(err));
-};
+}
 
-const getVotes = postId => {
+function getVotes(postId) {
   return db('votes')
     .count('post_id')
     .where({ post_id: postId })
     .then(row => row)
     .catch(err => err);
-};
+}
 
-const checkUserVote = voteInfo => {
+function checkUserVote(voteInfo) {
   console.log({ voteInfo });
   return db('votes')
     .where({ post_id: voteInfo.post_id, username: voteInfo.username })
@@ -34,4 +34,4 @@ const checkUserVote = voteInfo => {
       }
     })
     .catch(err => err);
-};
+}

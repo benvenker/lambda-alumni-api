@@ -1,9 +1,5 @@
 require('dotenv').config();
 const { server, port, checkJwt } = require('./server.js');
-const posts = require('./data/db.js');
-const comments = require('./data/db.js');
-const users = require('./data/db.js');
-const votes = require('./data/db.js');
 
 server.listen(port, () => {
   console.log('Rnning on port 5000!');
@@ -15,5 +11,5 @@ server.get('/', (req, res) => {
 });
 
 server.get('/knex', (req, res) => {
-  return comments.testKnexOutput().then(output => res.json(output));
+  return res.status(200).json({ msg: 'Use this endpoint for testing...' });
 });

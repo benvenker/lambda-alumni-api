@@ -10,7 +10,7 @@ module.exports = {
   searchText,
 };
 
-const find = (itemsPerPage, page) => {
+function find(itemsPerPage, page) {
   return db
     .raw(
       `select
@@ -42,9 +42,9 @@ const find = (itemsPerPage, page) => {
       });
     })
     .catch(err => console.log(err));
-};
+}
 
-const findById = id => {
+function findById(id) {
   return db
     .raw(
       `select
@@ -63,34 +63,34 @@ const findById = id => {
     )
     .then(response => response.rows)
     .catch(err => console.log(err));
-};
+}
 
-const insert = post => {
+function insert(post) {
   return (
     db('posts')
       .insert(post, 'id')
       // .then((ids) => ({ id: ids[0] }))
       .catch(err => console.log(err))
   );
-};
+}
 
-const deletePost = post => {
+function deletePost(post) {
   const id = post.id;
   return db('posts')
     .where({ id: id })
     .del()
     .catch(err => console.log(err));
-};
+}
 
-const edit = post => {
+function edit(post) {
   return db('posts').where('id', '=', post.id).update({
     url: post.url,
     title: post.title,
     body: post.body,
   });
-};
+}
 
-const getMostPopular = (itemsPerPage, page) => {
+function getMostPopular(itemsPerPage, page) {
   return db
     .raw(
       `
@@ -111,9 +111,9 @@ const getMostPopular = (itemsPerPage, page) => {
     )
     .then(res => res.rows)
     .catch(err => err);
-};
+}
 
-const searchText = searchObj => {
+function searchText(searchObj) {
   var string = searchObj.terms;
   console.log(`${string.replace(/[""]/g, '')}`);
   return db
@@ -135,4 +135,4 @@ const searchText = searchObj => {
     )
     .then(res => res.rows)
     .catch(err => err);
-};
+}

@@ -3,12 +3,12 @@ const users = require('./usersDb');
 const checkJwt = require('../middleware/checkJwt');
 const router = express.Router();
 
-server.get('/username', (req, res) => {
+router.get('/username', (req, res) => {
   return users.findByUsername(req.query.username).then(user => res.json(user));
   // return res.json(req);
 });
 
-server.post('/', (req, res) => {
+router.post('/', (req, res) => {
   if (req.body.username !== '') {
     return users.addUser(req.body.username).then(user => {
       res.json(user);
