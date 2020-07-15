@@ -14,26 +14,6 @@ server.get('/', (req, res) => {
   res.send('<h1>Welcome to the Lambda Alumni API');
 });
 
-// TODO: change to a GET and accept query params; migrate to usersRouter.js
-server.post('/users', (req, res) => {
-  return users.findByUsername(req.body.username).then(user => res.json(user));
-  // return res.json(req);
-});
-
-// TODO: Change to /users and add to usersRouter.js
-// TODO: change calls to /add-user in the app to be a POST to /users
-server.post('/add-user', (req, res) => {
-  if (req.body.username !== '') {
-    return users.addUser(req.body.username).then(user => {
-      res.json(user);
-    });
-  } else if (req.body.username === '') {
-    return null;
-  }
-
-  return req.body;
-});
-
 // TODO: Migrate to a votesRouter.js file? Create votes model and router files?
 server.post('/votes', (req, res) => {
   return votes.getVotes(req.body.post_id).then(v => res.json(v));
