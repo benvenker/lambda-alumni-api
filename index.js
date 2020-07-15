@@ -14,6 +14,7 @@ server.get('/', (req, res) => {
   res.send('<h1>Welcome to the Lambda Alumni API');
 });
 
+// TODO: Migrate to postsRouter.js
 server.get('/posts', (req, res) => {
   const { page, items } = req.query;
 
@@ -27,6 +28,7 @@ server.get('/posts', (req, res) => {
     });
 });
 
+// TODO: change to /posts/popular and migrate to postsRouter.js
 server.get('/popular', (req, res) => {
   const itemsPerPage = req.query.items;
   const page = req.query.page;
@@ -40,6 +42,7 @@ server.get('/popular', (req, res) => {
     });
 });
 
+// TODO: change to /posts/:id and migrate to postsRouter.js
 server.get('/post/:id', (req, res) => {
   return posts
     .findById(req.params.id)
@@ -57,6 +60,7 @@ server.get('/post/:id', (req, res) => {
     );
 });
 
+// TODO: change to /posts/:id and migrate to postsRouter.js
 server.put('/post/:id', (req, res) => {
   return posts
     .edit({ id: req.params.id, ...req.body })
@@ -72,10 +76,12 @@ server.put('/post/:id', (req, res) => {
     });
 });
 
+// TODO: change to /posts/:id and migrate to postsRouter.js
 server.delete('/post/:id', (req, res) => {
   return posts.deletePost({ id: req.params.id }).catch(err => console.log(err));
 });
 
+// TODO: migrate to commentsRouter.js
 server.get('/comments/:postId', checkJwt, (req, res) => {
   // console.log(req.params.postId);
   const postId = req.params.postId;
@@ -95,6 +101,7 @@ server.get('/comments/:postId', checkJwt, (req, res) => {
     );
 });
 
+// TODO: migrate to commentsRouter.js
 server.get('/comments/:postId/count', (req, res) => {
   const postId = req.params.postId;
   return comments
@@ -113,6 +120,7 @@ server.get('/comments/:postId/count', (req, res) => {
     });
 });
 
+// TODO: Change to /comments and migrate to postsRouter.js
 server.post('/post', (req, res) => {
   return comments
     .insertComment(req.body)
@@ -126,6 +134,8 @@ server.post('/post', (req, res) => {
     );
 });
 
+// TODO: change to /posts and migrate to postsRouter.js
+// TODO: change calls to /submit in the app to be /posts
 server.post('/submit', checkJwt, (req, res) => {
   console.log(req.body);
   return posts
@@ -139,11 +149,14 @@ server.post('/submit', checkJwt, (req, res) => {
   // res.send({ message: "endpoit hit" });
 });
 
+// TODO: change to a GET and accept query params; migrate to usersRouter.js
 server.post('/users', (req, res) => {
   return users.findByUsername(req.body.username).then(user => res.json(user));
   // return res.json(req);
 });
 
+// TODO: Change to /users and add to usersRouter.js
+// TODO: change calls to /add-user in the app to be a POST to /users
 server.post('/add-user', (req, res) => {
   if (req.body.username !== '') {
     return users.addUser(req.body.username).then(user => {
@@ -156,14 +169,17 @@ server.post('/add-user', (req, res) => {
   return req.body;
 });
 
+// TODO: Change to /posts/upvote and migrate to postsRouter.js
 server.post('/upvote', (req, res) => {
   return votes.upVote(req.body).then(vote => res.json(vote));
 });
 
+// TODO: Migrate to a votesRouter.js file? Create votes model and router files?
 server.post('/votes', (req, res) => {
   return votes.getVotes(req.body.post_id).then(v => res.json(v));
 });
 
+// TODO: Change to a GET, accept query params, and add to votesRouter.js
 server.post('/check-vote', (req, res) => {
   return votes
     .checkUserVote(req.body)
@@ -178,6 +194,7 @@ server.post('/check-vote', (req, res) => {
     );
 });
 
+// TODO: Change to /posts/search and migrate to postsRouter.js
 server.post('/search', (req, res) => {
   return posts
     .searchText(req.body)
