@@ -1,47 +1,3 @@
-// TODO: migrate to dbConfig.js
-const knex = require('knex');
-const knexConfig = require('../knexfile');
-const db = knex(knexConfig.development);
-const moment = require('moment');
-
-// TODO: Migrate to commentsDb.js
-const findComments = () => {
-  return db('comments');
-};
-
-// TODO: Migrate to commentsDb.js
-const insertComment = comment => {
-  const commentWithDate = { ...comment, created_date: new Date() };
-  return db('comments')
-    .insert(commentWithDate, 'id')
-    .catch(err => console.log(err));
-};
-
-// TODO: Migrate to commentsDb.js
-const findCommentByPostId = postId => {
-  return db('comments')
-    .join('users', 'users.id', '=', 'comments.user_id')
-    .select(
-      'users.username',
-      'comments.body',
-      'comments.created_date',
-      'comments.user_id'
-    )
-    .where({ post_id: Number(postId) })
-    .orderBy('comments.created_date', 'desc')
-    .then(rows => {
-      return rows.map(row => {
-        return {
-          body: row.body,
-          created_date: moment(row.created_date).format("MMMM Do 'YY, h:mm a"),
-          user_id: row.user_id,
-          username: row.username,
-        };
-      });
-    })
-    .catch(err => console.log(err));
-};
-
 const testKnexOutput = () => {
   const voteCount = db.raw(
     `(select count(v.id) as votes from votes v where v.post_id = p.id`
@@ -67,15 +23,6 @@ const testKnexOutput = () => {
 };
 
 testKnexOutput();
-
-// TODO: Migrate to commentsDb.js
-const findCommentsCountByPostId = postId => {
-  const id = postId; // don't think is necessary but pg is barking
-  return db('comments')
-    .count('comments')
-    .where({ post_id: id })
-    .catch(err => console.log(err));
-};
 
 // TODO: Migrate to votesDb.js
 const upVote = vote => {
