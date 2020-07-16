@@ -6,14 +6,17 @@ module.exports = {
   checkUserVote,
 };
 
+// Upvote a post
 function upVote(vote) {
   // take the id of the post and the userID
   const newVote = { ...vote, created_date: new Date() };
   return db('votes')
     .insert(newVote, 'id')
-    .catch(err => console.log(err));
+    .then(vote => vote)
+    .catch(err => err);
 }
 
+// Get the votes for given post
 function getVotes(postId) {
   return db('votes')
     .count('post_id')
@@ -22,8 +25,8 @@ function getVotes(postId) {
     .catch(err => err);
 }
 
+// Check if a user already voted on a post
 function checkUserVote(voteInfo) {
-  console.log({ voteInfo });
   return db('votes')
     .where({ post_id: voteInfo.post_id, username: voteInfo.username })
     .then(rows => {
