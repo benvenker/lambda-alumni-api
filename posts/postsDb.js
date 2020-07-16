@@ -42,7 +42,7 @@ function find(itemsPerPage, page) {
         };
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => err);
 }
 
 function findById(id) {
@@ -63,7 +63,7 @@ function findById(id) {
         `
     )
     .then(response => response.rows)
-    .catch(err => console.log(err));
+    .catch(err => err);
 }
 
 function insert(post) {
@@ -71,7 +71,7 @@ function insert(post) {
     db('posts')
       .insert(post, 'id')
       // .then((ids) => ({ id: ids[0] }))
-      .catch(err => console.log(err))
+      .catch(err => err)
   );
 }
 
@@ -80,7 +80,7 @@ function deletePost(post) {
   return db('posts')
     .where({ id: id })
     .del()
-    .catch(err => console.log(err));
+    .catch(err => err);
 }
 
 function edit(post) {
@@ -91,9 +91,9 @@ function edit(post) {
   });
 }
 
-function getMostPopular(itemsPerPage, page) {
-  return db
-    .raw(
+async function getMostPopular(itemsPerPage, page) {
+  try {
+    const res = await db.raw(
       `
      select
         p.title,
@@ -109,9 +109,11 @@ function getMostPopular(itemsPerPage, page) {
         limit ${itemsPerPage} offset ${page * itemsPerPage};
 
   `
-    )
-    .then(res => res.rows)
-    .catch(err => err);
+    );
+    return res.rows;
+  } catch (err) {
+    return err;
+  }
 }
 
 function searchText(searchObj) {
