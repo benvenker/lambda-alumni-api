@@ -3,19 +3,33 @@ const posts = require('./postsDb');
 const checkJwt = require('../middleware/checkJwt');
 const router = express.Router();
 
+// Get  a list of posts
 router.get('/', (req, res) => {
   const { page, items } = req.query;
-
   return posts
     .find(items, page)
     .then(posts => res.status(200).json(posts))
     .catch(err => {
       res.status(500).json({
-        message: `Error retrieving poasts: ${err}`,
+        message: `Error retrieving posts: ${err}`,
       });
     });
 });
 
+// Create a new post
+router.post('/', checkJwt, (req, res) => {
+  console.log(req.body);
+  return posts
+    .insert(req.body)
+    .then(post => {
+      post === undefined
+        ? res.status(404).json({ message: 'There was nothing to post.' })
+        : res.status(200).json(post);
+    })
+    .catch(err => res.status(500).json({ error: 'The post failed.' }));
+});
+
+// Get posts ordered by number of votes, descending
 router.get('/popular', (req, res) => {
   const itemsPerPage = req.query.items;
   const page = req.query.page;
@@ -65,9 +79,16 @@ router.put('/:id', (req, res) => {
 
 // Delete a post by ID
 router.delete('/:id', (req, res) => {
-  return posts.deletePost({ id: req.params.id }).catch(err => console.log(err));
+  if (!req.params.id) {
+    return res.status(404).json({ error: 'Please inlcude a post id' });
+  }
+  return posts
+    .deletePost({ id: req.params.id })
+    .then(post => {
+      res.status(200).json({ message: 'Post deleted' });
+    })
+    .catch(err => console.log(err));
 });
-
 // Create a new post
 router.post('/', checkJwt, (req, res) => {
   console.log(req.body);
