@@ -20,7 +20,7 @@ function upVote(vote) {
 function getVotes(postId) {
   return db('votes')
     .count('post_id')
-    .where({ post_id: postId })
+    .where('post_id', '=', postId)
     .then(row => row)
     .catch(err => err);
 }
